@@ -78,7 +78,7 @@ if [ $NUM_HOSTS -ne 0 ]; then
 		TARGET_IP=$(sed -n $COUNT'p' available_hosts | grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}')
 		echo ""
 		echo "Connecting to the "$COUNT" available ("$TARGET_IP")"
-		echo -e "\e[32mssh -p $PORT $USER@$TARGET_IP:$PORT\e[0m"
+		echo -e "\e[32mssh $USER@$TARGET_IP:$PORT\e[0m"
 		ssh -p $PORT $USER@$TARGET_IP 
 		# > ssh_error 2>&1
 		#echo -e "\e[31m"$(sed -n '1p' ssh_error)"\e[0m"
