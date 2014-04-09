@@ -14,7 +14,7 @@ echo "My submask: "$MY_SUBMASK
 echo "Slash notation: /"$MY_SUBMASK_SLASH
 
 echo "Scanning request"
-echo "User: "$USER 
+echo "User: "$USER
 echo "Port: "$PORT 
 echo "Interface: "$INTERFACE
 
@@ -23,13 +23,21 @@ echo "Performing scan..."
 echo "namp -p $PORT $MY_IP/$MY_SUBMASK_SLASH --open --exclude $MY_IP"
 nmap -p $PORT $MY_IP/$MY_SUBMASK_SLASH --open --exclude $MY_IP | grep "Nmap scan report" > available_hosts
 
-echo "$(wc -l available_hosts) available hosts"
-cat available_hosts | tr -d "Nmap scan report for "
+NUM_HOST=$(wc -l available_hosts)
+echo $NUM_HOST "available host/s"
+cat available_hosts  | sed s/'Nmap scan report for '//g 
 
+COUNT=1
+RES=1
+while [  "$COUNT" -le "$NUM_HOST" ]
+do
+TARGET_IP=$(sed -n $COUNT'p' available_hosts | sed -e 's/\(^.*(\)\(.*\)\().*$\)/\2/')
 
-
-TARGET_IP=$(head -n 1 available_hosts | sed -e 's/\(^.*(\)\(.*\)\().*$\)/\2/')
 echo "Connecting to the first available: "$TARGET_IP
 echo "trying ssh  $USER@$TARGET_IP:$PORT"
 ssh -p  $PORT $USER@$TARGET_IP
-echo "result:" $?
+RES=$?
+echo "RES" $RES
+COUNT=$(( $COUNT + 1 ))
+
+done;
